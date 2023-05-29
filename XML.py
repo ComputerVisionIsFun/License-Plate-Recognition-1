@@ -31,7 +31,8 @@ def xmlDecodingInTheFolder(xmlFolder):
     objs = []
     for file in files:
         if file[-1]=='l':
-            xmlPath = xmlFolder + file
+            # xmlPath = xmlFolder + file
+            xmlPath = os.path.join(xmlFolder, file)
             anno = xmlDecoding(xmlPath)# anno = {'filenmae': str, 'objs':[{'xmin':, 'xmax', 'ymin':, 'ymax':}, ...]}
             # print(xmlPath, anno)
             annos.append(anno)

@@ -64,73 +64,73 @@ class Anchors():
 
         return img
 
-class LprData():
-    def __init__(self, XmlImgFolder = 'D:/Dataset/LPR/cars_on_the_road/',anchors:Anchors,resize = P.resize, osize = P.osize):
+# class LprData():
+#     def __init__(self, XmlImgFolder = 'D:/Dataset/LPR/cars_on_the_road/',anchors:Anchors, resize = P.resize, osize = P.osize):
 
-        self.XmlImgFolder =  XmlImgFolder
-        self.annos, self.objs = XML.xmlDecodingInTheFolder(XmlImgFolder)
-        self.anchors = anchors
-        self.resize = resize
+#         self.XmlImgFolder =  XmlImgFolder
+#         self.annos, self.objs = XML.xmlDecodingInTheFolder(XmlImgFolder)
+#         self.anchors = anchors
+#         self.resize = resize
         
-        self.rannos = []
-        ratioWidth, ratioHeight = resize[0]/osize[0], resize[1]/osize[1]
+#         self.rannos = []
+#         ratioWidth, ratioHeight = resize[0]/osize[0], resize[1]/osize[1]
 
-        for path_i in range(len(self.annos)):
-            ranno = {'filename':self.annos[path_i]['filename'], 'objs':self.annos[path_i]['objs']}
-            for obj_i, obj in enumerate(ranno['objs']):
-                ranno['objs'][obj_i]['xmin'], ranno['objs'][obj_i]['xmax'] = obj['xmin']*ratioWidth, obj['xmax']*ratioWidth
-                ranno['objs'][obj_i]['ymin'], ranno['objs'][obj_i]['ymax'] = obj['ymin']*ratioHeight, obj['ymax']*ratioHeight
+#         for path_i in range(len(self.annos)):
+#             ranno = {'filename':self.annos[path_i]['filename'], 'objs':self.annos[path_i]['objs']}
+#             for obj_i, obj in enumerate(ranno['objs']):
+#                 ranno['objs'][obj_i]['xmin'], ranno['objs'][obj_i]['xmax'] = obj['xmin']*ratioWidth, obj['xmax']*ratioWidth
+#                 ranno['objs'][obj_i]['ymin'], ranno['objs'][obj_i]['ymax'] = obj['ymin']*ratioHeight, obj['ymax']*ratioHeight
                 
-            self.rannos.append(ranno)
+#             self.rannos.append(ranno)
 
-    def DrawAnnos(self, ind:int, show=True)->np.array:
-        '''
-        resize = (rWidth, rHeight)
-        '''
-        if ind>len(self.rannos) - 1:
-            print('ind is out of the range!')
-        else:
-            img = cv2.resize(cv2.imread(self.XmlImgFolder + self.rannos[ind]['filename']), self.resize, 1)
-            # img = D.make_grid(img, P.grid_x, P.grid_y)
-            objs = self.rannos[ind]['objs']
-            for obj in objs:
-                xmin, xmax, ymin, ymax = int(obj['xmin']), int(obj['xmax']),int(obj['ymin']),int(obj['ymax'])
-                cv2.rectangle(img, (xmin,ymin), (xmax,ymax),(0, 200, 0), 3, 8, 0)
-                cx, cy = int((obj['xmin'] + obj['xmax'])/2), int((obj['ymin'] + obj['ymax'])/2)
-                cv2.circle(img, (cx,cy),3,(0,255,0),-1,8,0)
-            if show:
-                cv2.imshow("", img)
-                cv2.waitKey(0)
+#     def DrawAnnos(self, ind:int, show=True)->np.array:
+#         '''
+#         resize = (rWidth, rHeight)
+#         '''
+#         if ind>len(self.rannos) - 1:
+#             print('ind is out of the range!')
+#         else:
+#             img = cv2.resize(cv2.imread(self.XmlImgFolder + self.rannos[ind]['filename']), self.resize, 1)
+#             # img = D.make_grid(img, P.grid_x, P.grid_y)
+#             objs = self.rannos[ind]['objs']
+#             for obj in objs:
+#                 xmin, xmax, ymin, ymax = int(obj['xmin']), int(obj['xmax']),int(obj['ymin']),int(obj['ymax'])
+#                 cv2.rectangle(img, (xmin,ymin), (xmax,ymax),(0, 200, 0), 3, 8, 0)
+#                 cx, cy = int((obj['xmin'] + obj['xmax'])/2), int((obj['ymin'] + obj['ymax'])/2)
+#                 cv2.circle(img, (cx,cy),3,(0,255,0),-1,8,0)
+#             if show:
+#                 cv2.imshow("", img)
+#                 cv2.waitKey(0)
 
-            return img
+#             return img
 
-    def DrawAnchors(self, ind:int, show:bool=True):
-        if ind>len(self.rannos) - 1:
-            print('ind is out of the range!')
-        else:
-            img = cv2.resize(cv2.imread(self.XmlImgFolder + self.rannos[ind]['filename']), self.resize, 1)
-            # img = D.make_grid(img, P.grid_x, P.grid_y)
-            img = self.anchors.show(img)
+#     def DrawAnchors(self, ind:int, show:bool=True):
+#         if ind>len(self.rannos) - 1:
+#             print('ind is out of the range!')
+#         else:
+#             img = cv2.resize(cv2.imread(self.XmlImgFolder + self.rannos[ind]['filename']), self.resize, 1)
+#             # img = D.make_grid(img, P.grid_x, P.grid_y)
+#             img = self.anchors.show(img)
             
-            if show:
-                cv2.imshow("", img)
-                cv2.waitKey(0)
+#             if show:
+#                 cv2.imshow("", img)
+#                 cv2.waitKey(0)
 
-            return img
+#             return img
 
-    def DrawBoth(self, ind:int, show:bool=True)->None:
-        if ind>len(self.annos) - 1:
-            print('ind is out of the range!')
-        else:
-            img = self.DrawAnnos(ind, False)
-            # anchors
-            img = self.anchors.show(img)
+#     def DrawBoth(self, ind:int, show:bool=True)->None:
+#         if ind>len(self.annos) - 1:
+#             print('ind is out of the range!')
+#         else:
+#             img = self.DrawAnnos(ind, False)
+#             # anchors
+#             img = self.anchors.show(img)
 
-            if show:
-                cv2.imshow("", img)
-                cv2.waitKey(0)
+#             if show:
+#                 cv2.imshow("", img)
+#                 cv2.waitKey(0)
 
-            return img
+#             return img
 
 
 
