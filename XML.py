@@ -1,8 +1,12 @@
 import xml.etree.ElementTree as ET
 import os
 
+
 def xmlDecoding(xmlPath)->dict:
+    '''
+    ## return:annotation = {'filename':str, 'objs':[]} 
     
+    '''
     tree = ET.parse(xmlPath)
     root = tree.getroot()
     annotation = {}
@@ -19,16 +23,16 @@ def xmlDecoding(xmlPath)->dict:
 
     return annotation
 
-def xmlDecodingInTheFolder(xmlFolder)->list:
-    # print(xmlFolder,'--------------------xmldecodinginthefolder')
+def xmlDecodingInTheFolder(xmlFolder):
+    
     files = os.listdir(xmlFolder)
-    # print(files)
+    
     annos = []
     objs = []
     for file in files:
         if file[-1]=='l':
             xmlPath = xmlFolder + file
-            anno = xmlDecoding(xmlPath)
+            anno = xmlDecoding(xmlPath)# anno = {'filenmae': str, 'objs':[{'xmin':, 'xmax', 'ymin':, 'ymax':}, ...]}
             # print(xmlPath, anno)
             annos.append(anno)
             objs+=anno['objs']
