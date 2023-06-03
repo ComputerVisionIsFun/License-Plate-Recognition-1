@@ -14,10 +14,8 @@ class myDataset(Dataset):
         self.anchors = U.Anchors(ays=ays, axs=axs)
         self.xml_img_folder = xml_img_folder
 
-        # find all annotations in the xml folder [{'filename':str, 'objs':['xmin':,... ]}, {}, ...]
-        '''
-        self.annos is a list, and for example, self.annos[0] = {'filename': 'load_2397.png', 'objs': [{'xmin': 442, 'xmax': 568, 'ymin': 242, 'ymax': 291}]}
-        '''
+        # find all annotations(self.annos) in the xml folder [{'filename':str, 'objs':[{'xmin':, ...},... ], {}, ...]
+        
         self.annos, _ = XML.xmlDecodingInTheFolder(self.xml_img_folder)
         
         # resize: xmin, xmax, ymin, ymax-->xmin = xmin/(oWidth/rWidth), ...
@@ -31,9 +29,9 @@ class myDataset(Dataset):
                 r_ymin, r_ymax = int(obj['ymin']/resize_h_ratio + .5), int(obj['ymax']/resize_h_ratio + .5)
                 
                 ranno['objs'].append({'xmin':r_xmin, 'xmax':r_xmax, 'ymin':r_ymin, 'ymax':r_ymax})
-                
+            
+            self.rannos.append(ranno)
 
-        
         # encoding
 
 

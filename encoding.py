@@ -1,33 +1,14 @@
-
 import utils as U
 import numpy as np
 from typing import List
 import debug as D
 import cv2
 
-def find_the_nearest_anchor(anchors:U.Anchors, obj:dict):
-    '''
-    ## Given anchors and an obj of type dict with 'xmin', 'xmax', 'ymin', 'ymax', 
-    ## find the nearest anchor close to the center of the object.  
-    
-    '''
-    rows, cols = anchors.rows, anchors.cols
-    distances = np.zeros(shape = (rows, cols), dtype=float)
-    cx = (obj['xmin'] + obj['xmax'])/2. 
-    cy = (obj['ymin'] + obj['ymax'])/2.
-
-    for row in range(rows):
-        for col in range(cols):
-            anchor = anchors.at(row, col)
-            distances[row, col] = (anchor.x - cx)**2 + (anchor.y - cy)**2
-            
-    return np.where(distances==np.min(distances))
-
 
 def encoding(objs:List[dict], anchors:U.Anchors, w_normalize = 416, h_normalize = 416):
     '''
     Ecoding an image to an array of shape 5 x rows x cols, where (rows, cols) is the shape of anchors.
-    
+
     ## Parameters:
         * objs: It's a list of dicts with keys xmin, xmax, ymin, ymax.
         * anchors: variable of type Anchors.
@@ -49,7 +30,7 @@ def encoding(objs:List[dict], anchors:U.Anchors, w_normalize = 416, h_normalize 
 
     for obj in objs:
         # find nearest anchors
-        nearest_anchors = find_the_nearest_anchor(anchors, obj)
+        nearest_anchors = U.find_the_nearest_anchor(anchors, obj)
         obj_center = U.Point((obj['xmin'] + obj['xmax'])/2, (obj['ymin'] + obj['ymax'])/2)
 
         for na_i in range(nearest_anchors[0].shape[0]):
@@ -60,7 +41,20 @@ def encoding(objs:List[dict], anchors:U.Anchors, w_normalize = 416, h_normalize 
             target[3, row, col] = (obj['xmax'] - obj['xmin'])/w_normalize
             target[4, row, col] = (obj['ymax'] - obj['ymin'])/h_normalize
 
+        # larger iou
+
+        
+
+
     return target
+
+
+
+
+
+
+
+
 
 
 # def decoding(target:np.array, img:np.array, anchors:U.Anchors, w_normalize = 416, h_normalize = 416, obj_th=0.8, grid=True):
