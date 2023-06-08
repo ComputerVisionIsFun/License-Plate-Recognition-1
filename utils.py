@@ -5,7 +5,7 @@ import cv2
 import debug as D
 import XML
 import utils as U
-
+from termcolor import colored
 
 class Point():
     '''
@@ -90,20 +90,22 @@ def find_the_nearest_anchor(anchors:U.Anchors, obj:dict):
     return np.where(distances==np.min(distances))
 
 
-def intersection_of_two_rects(xmin_1, xmax_1, ymin_1, ymax_1, xmin_2, xmax_2, ymin_2, ymax_2):
+def intersection_of_two_rects(xmin_1:float, xmax_1:float, ymin_1:float, ymax_1:float, xmin_2:float, xmax_2:float, ymin_2:float, ymax_2:float):
     dx = min(xmax_1, xmax_2) - max(xmin_1, xmin_2)
     dy = min(ymax_1, ymax_2) - max(ymin_1, ymin_2)
     
     if dx>0 and dy>0:
+        # print('dx, dy = ',dx, dy)
         return dx*dy
     else:
         return 0
 
 def compute_iou(xmin_1, xmax_1, ymin_1, ymax_1, xmin_2, xmax_2, ymin_2, ymax_2):
     intersection_area = intersection_of_two_rects(xmin_1, xmax_1, ymin_1, ymax_1, xmin_2, xmax_2, ymin_2, ymax_2)
-    union_area = (xmax_1 - xmin_1)*(ymax_1 - ymin_1) + (xmax_1 - xmin_1)*(ymax_1 - ymin_2)
-
-    return intersection_area/(union_area + 0.0001)
+    union_area = (xmax_1 - xmin_1)*(ymax_1 - ymin_1) + (xmax_2 - xmin_2)*(ymax_2 - ymin_2)
+    # print(colored('inter and uni', 'red'), intersection_area, union_area)
+    # print(xmin_1, xmax_1, ymin_1, ymax_1, xmin_2, xmax_2, ymin_2, ymax_2)
+    return intersection_area/(union_area)
     
 def argmax_iou(anchors:Anchors, cell_width:float, cell_height:float, 
                obj_xmin:float, obj_xmax:float, obj_ymin:float, obj_ymax:float, iou_th=.5):
@@ -113,15 +115,17 @@ def argmax_iou(anchors:Anchors, cell_width:float, cell_height:float,
     
     for row in range(rows):
         for col in range(cols):
+            # if row==3 and col==4:
+            #     print('row, col-----------------------------------', row, col)
             pt = anchors.at(row=row, col=col)
             cell_cx, cell_cy = pt.x, pt.y
-            cell_xmin, cell_xmax = cell_cx - half_cell_width, cell_cy + half_cell_height
+            cell_xmin, cell_xmax = cell_cx - half_cell_width, cell_cx + half_cell_width
             cell_ymin, cell_ymax = cell_cy - half_cell_height, cell_cy + half_cell_height
 
-            iou = compute_iou(cell_xmin,cell_xmax,cell_ymin,cell_ymax,obj_xmin,obj_xmax,obj_ymin,obj_ymax)
-
+            iou = compute_iou(cell_xmin, cell_xmax, cell_ymin, cell_ymax, obj_xmin, obj_xmax, obj_ymin, obj_ymax)
+            # print(colored('iou score', 'red'), iou)
             iou_array[row, col] = iou
-
+    # print(iou_array)
 
     return np.where(iou_array>=iou_th)
 

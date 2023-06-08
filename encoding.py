@@ -3,9 +3,10 @@ import numpy as np
 from typing import List
 import debug as D
 import cv2
+from termcolor import colored
 
 
-def encoding(objs:List[dict], anchors:U.Anchors, w_normalize = 416, h_normalize = 416):
+def encoding(objs:List[dict], anchors:U.Anchors, w_normalize = 416, h_normalize = 416, iou_th = .3, cell_width=64, cell_height=32):
     '''
     Ecoding an image to an array of shape 5 x rows x cols, where (rows, cols) is the shape of anchors.
 
@@ -27,7 +28,7 @@ def encoding(objs:List[dict], anchors:U.Anchors, w_normalize = 416, h_normalize 
     
     x_normalize, y_normalize = (anchors.at(0,0).x - anchors.at(0,1).x)/2, (anchors.at(1,0).y - anchors.at(0,0).y)/2
     target = np.zeros(shape=(5, anchors.rows, anchors.cols))#objness, cx, cy, w, h
-
+    # print(iou_th, '---')
     for obj in objs:
         # find nearest anchors
         nearest_anchors = U.find_the_nearest_anchor(anchors, obj)
@@ -42,8 +43,17 @@ def encoding(objs:List[dict], anchors:U.Anchors, w_normalize = 416, h_normalize 
             target[4, row, col] = (obj['ymax'] - obj['ymin'])/h_normalize
 
         # larger iou
-
-        
+        ayx_tuples_iou = U.argmax_iou(anchors, cell_width, cell_height,obj['xmin'],obj['xmax'],obj['ymin'],obj['ymax'],iou_th)
+        # print(colored('iou', 'yellow'), ayx_tuples_iou)
+        for i, ays in enumerate(ayx_tuples_iou[0]):
+            # print('iou:', i)
+            # print(ays)
+            row, col = ays, ayx_tuples_iou[1][i]
+            target[0, row, col] = 1
+            target[1, row, col] = (obj_center.x - anchors.axs[col])/x_normalize
+            target[2, row, col] = (obj_center.y - anchors.axs[row])/y_normalize
+            target[3, row, col] = (obj['xmax'] - obj['xmin'])/w_normalize
+            target[4, row, col] = (obj['ymax'] - obj['ymin'])/h_normalize
 
 
     return target
