@@ -44,6 +44,7 @@ class Anchors():
     '''
     ## member:
         * rows, cols, ays, axs.
+        * anchors = list of tuples which of the form (ay, ax).
     ## member funciton: 
         * at(self, row, col): return anchor in the position (row, col) which of type Point.
         * show(self, img:np.array): draw anchors on the img.
@@ -85,8 +86,11 @@ def find_the_nearest_anchor(anchors:U.Anchors, obj:dict):
     for row in range(rows):
         for col in range(cols):
             anchor = anchors.at(row, col)
+            print(anchor.x, anchor.y, cx, cy)
             distances[row, col] = (anchor.x - cx)**2 + (anchor.y - cy)**2
             
+    # print(distances, np.min(distances))
+    
     return np.where(distances==np.min(distances))
 
 

@@ -61,6 +61,44 @@ def encoding(objs:List[dict], anchors:U.Anchors, w_normalize = 416, h_normalize 
 
 
 
+def encoding_area(objs:List[dict], anchors:U.Anchors):
+    n_axs, n_ays = len(anchors.axs), len(anchors.ays)
+    
+    target = np.zeros((3, n_ays, n_axs), dtype='float')
+    area = np.zeros((1, n_ays, n_axs), dtype='float')
+    # 
+    cell_w_half, cell_h_half = (anchors.axs[1] - anchors.axs[0])/2, (anchors.ays[1] - anchors.ays[0])/2
+    cell_area = (anchors.axs[1] - anchors.axs[0])*(anchors.ays[1] - anchors.ays[0])
+    for obj in objs:
+        # find the nearest anchors
+        nearest_anchors = U.find_the_nearest_anchor(anchors, obj)
+        obj_center = U.Point((obj['xmin'] + obj['xmax'])/2, (obj['ymin'] + obj['ymax'])/2)
+        
+        for na_i in range(nearest_anchors[0].shape[0]):
+            row, col = nearest_anchors[0][na_i], nearest_anchors[1][na_i]
+            target[0, row, col] = 1
+            target[1, row, col] = (obj_center.x - anchors.axs[col])/cell_w_half
+            target[2, row, col] = (obj_center.y - anchors.axs[row])/cell_h_half
+            
+        # fill area for each obj
+        for row_cell in range(n_ays):
+            for col_cell in range(n_axs):
+                anchor = anchors.at(row_cell, col_cell)
+                cell_xmin, cell_xmax = anchor.x - cell_w_half, anchor.x + cell_w_half
+                cell_ymin, cell_ymax = anchor.y - cell_h_half, anchor.y + cell_h_half
+                
+                obj_inter_cell = U.intersection_of_two_rects(obj['xmin'],obj['xmax'],obj['ymin'],obj['ymax'],cell_xmin, cell_xmax,cell_ymin,cell_ymax)
+
+                area[0, row_cell, col_cell] = obj_inter_cell/cell_area
+
+    return target, area
+
+
+
+
+
+
+
 
 
 
@@ -130,11 +168,4 @@ def encoding(objs:List[dict], anchors:U.Anchors, w_normalize = 416, h_normalize 
 
 
 
-
-
-
-
-        
-
-    
 

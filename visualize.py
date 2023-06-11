@@ -1,32 +1,13 @@
-import numpy as np
 import cv2
+import numpy as np
 import utils as U
-import sys
-
-axs = [16+i*32 for i in range(13)]
-ays = [16+i*32 for i in range(13)]
-# axs = [16+i*16 for i in range(26)]
-# ays = [16+i*16 for i in range(26)]
-
-DEVICE = sys.platform
-
-print(DEVICE)
-
-if DEVICE=='win32':
-    xml_img_folder = 'D:/Dataset/LPR_dataset/xml_2/'
-else:
-    xml_img_folder = '/Users/chiang-en/Desktop/LPR_dataset/xml/'
+from typing import List
 
 
 
-draw_folder = './draw_1/'
 
 
-rWidth = 416
-rHeight = 416
-oWidth=1280
-oHeight=720 
-cell_w, cell_h = 64, 48
+
 
 
 
@@ -51,9 +32,13 @@ def draw_anchors(image:np.array, anchors:U.Anchors):
 
 
 
+def draw_objs(image:np.array, objs:List[dict]):
+    '''
+    For each element in the objs, its of type dict with keys, 'xmin',
+    'xmax', 'ymin' and 'ymax'.
 
-
-
-
-
-
+    '''
+    for obj in objs:
+        xmin, xmax = int(obj['xmin']), int(obj['xmax'])
+        ymin, ymax = int(obj['ymin']), int(obj['ymax'])
+        cv2.rectangle(image, (xmin,ymin),(xmax,ymax),(100,200,36), 2, 8, 0)

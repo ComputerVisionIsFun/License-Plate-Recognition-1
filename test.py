@@ -44,8 +44,8 @@ for ranno in ds.rannos:
     # plt.xticks([i for i in range(0, tp.rWidth, 32)])
     # plt.grid(color='black', alpha=.5)        
 
-    # cv2.imshow("", rimage)
-    # cv2.waitKey(0)
+    cv2.imshow("", rimage)
+    cv2.waitKey(0)
 
 
     # plot anchors
@@ -62,7 +62,7 @@ for ranno in ds.rannos:
     # plt.close()
     # cv2.imshow("", rimage)
     # cv2.waitKey(0)
-    cv2.imwrite(save_path, rimage)
+    # cv2.imwrite(save_path, rimage)
 
 
     # 
