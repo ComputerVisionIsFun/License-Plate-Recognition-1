@@ -23,7 +23,7 @@ oWidth, oHeight = parameters['OWIDTH'], parameters["OHEIGHT"]
 # 
 
 ds = md.myDataset(ays,axs,xml_img_folder,rWidth,rHeight,oWidth,oHeight)
-idx = 10
+idx = 56
 img = ds[idx]['image'].detach().cpu().numpy().transpose(1,2,0)
 target = ds[idx]['target'].detach().cpu().numpy()
 objness = np.where(target[0, :, :]==1)
@@ -50,18 +50,21 @@ cell_h_half = (ds.anchors.ays[1] - ds.anchors.ays[0])/2
 
 objs = []
 for obj_i in range(num_objs):
-    
+    row, col = objness_ys[obj_i], objness_xs[obj_i]
+    axy = ds.anchors.at(row, col)
+    ax, ay = axy.x, axy.y
+    cx = int(target[1, row, col]*cell_w_half + ax + .5)
+    cy = int(target[2, row, col]*cell_h_half + ay + .5)
+
+    cv2.circle(img,(cx,cy),2,(0,0,255),-1,8,0)
 
 
 
 
 
 
-for i, ax in enumerate(objness_xs):
-    ay = objness_ys[i]
-    # print((ds.anchors.axs[ax], ds.anchors.ays[ay]))
-    cv2.circle(img, (ds.anchors.axs[ax], ds.anchors.ays[ay]),3, (255,255,0),-1,8,0)
-    
+
+
 
 
 
