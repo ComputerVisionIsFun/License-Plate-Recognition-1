@@ -58,20 +58,6 @@ for obj_i in range(num_objs):
 
     cv2.circle(img,(cx,cy),2,(0,0,255),-1,8,0)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 cv2.namedWindow("", 2)
 cv2.imshow("", img)
 cv2.waitKey(0)
