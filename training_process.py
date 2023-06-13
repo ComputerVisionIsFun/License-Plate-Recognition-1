@@ -3,6 +3,7 @@ import torch.optim as optim
 import time
 from termcolor import colored
 
+
 def train(model, train_dataloader, test_dataloader, optimizer, criterion, milestones,
           pretrained_path, n_epochs, model_save_folder, early_stop):
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
