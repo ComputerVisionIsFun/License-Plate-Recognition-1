@@ -48,6 +48,7 @@ num_objs = len(objness[1])
 cell_w_half = (ds.anchors.axs[1] - ds.anchors.axs[0])/2
 cell_h_half = (ds.anchors.ays[1] - ds.anchors.ays[0])/2
 
+
 objs = []
 for obj_i in range(num_objs):
     row, col = objness_ys[obj_i], objness_xs[obj_i]
