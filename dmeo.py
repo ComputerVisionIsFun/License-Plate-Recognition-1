@@ -5,6 +5,9 @@ import cv2
 
 
 
+
+
+
 def demo_video(i_path, o_path, o_frame_rate, o_frame_width, o_frame_height):
     cap = cv2.VideoCapture(i_path)
     out = cv2.VideoWriter(o_path,cv2.VideoWriter_fourcc('M','J','P','G'), o_frame_rate, (o_frame_width,o_frame_height))

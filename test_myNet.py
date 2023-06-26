@@ -24,7 +24,11 @@ backbone = nn.Sequential(*backbone_list)
 model = mn.myNet(backbone=backbone, bridge_channels=512)
 input = torch.zeros((1, 3, 416, 416))
 area, objness, cxs, cys = model(input)
-print(area.size(), objness.size(), cxs.size(), cys.size())
+
+print('size of area = ', area.size())
+print('size of objness = ', objness.size()) 
+print('size of cxs = ', cxs.size())
+print('size of cys = ', cys.size())
 
 
 

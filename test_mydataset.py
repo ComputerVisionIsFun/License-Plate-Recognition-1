@@ -4,7 +4,7 @@ import utils as U
 import cv2
 import numpy as np
 import visualize as V
-
+import decoding as D
 
 
 with open('config.yaml') as f:
@@ -23,41 +23,19 @@ oWidth, oHeight = parameters['OWIDTH'], parameters["OHEIGHT"]
 # 
 
 ds = md.myDataset(ays,axs,xml_img_folder,rWidth,rHeight,oWidth,oHeight)
-idx = 56
-img = ds[idx]['image'].detach().cpu().numpy().transpose(1,2,0)
-target = ds[idx]['target'].detach().cpu().numpy()
-objness = np.where(target[0, :, :]==1)
-cxs = target[1, :, :]
-cys = target[2, :, :]
+idx = 156
+img = D.inverse_normalize(ds[idx]['image'], mean = [0.485,0.456,0.406], std = [0.229,0.224,0.225])
 
-
-img = (img*255).astype('uint8').copy()
-
-# img = np.zeros((500,500,3),dtype='uint8')
+target = ds[idx]['target']
 
 # plot grid
 V.draw_grid(img, ds.anchors.axs, ds.anchors.ays)
 
-# plot anchors
+# # plot anchors
 V.draw_anchors(img, ds.anchors)
 
-
 # plot objects
-objness_xs, objness_ys = objness[1], objness[0]
-num_objs = len(objness[1])
-cell_w_half = (ds.anchors.axs[1] - ds.anchors.axs[0])/2
-cell_h_half = (ds.anchors.ays[1] - ds.anchors.ays[0])/2
-
-
-objs = []
-for obj_i in range(num_objs):
-    row, col = objness_ys[obj_i], objness_xs[obj_i]
-    axy = ds.anchors.at(row, col)
-    ax, ay = axy.x, axy.y
-    cx = int(target[1, row, col]*cell_w_half + ax + .5)
-    cy = int(target[2, row, col]*cell_h_half + ay + .5)
-
-    cv2.circle(img,(cx,cy),2,(0,0,255),-1,8,0)
+img = D.target_to_vis(ds.anchors, img, target)
 
 cv2.namedWindow("", 2)
 cv2.imshow("", img)

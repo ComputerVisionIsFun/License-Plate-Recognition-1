@@ -35,7 +35,7 @@ class myDataset(Dataset):
                 ranno['objs'].append({'xmin':r_xmin, 'xmax':r_xmax, 'ymin':r_ymin, 'ymax':r_ymax})
             
             self.rannos.append(ranno)
-        self.transform = Compose(ToTensor(), Normalize(mean=self.mean, std=self.std)) 
+        self.transform = Compose([ToTensor(), Normalize(mean=self.mean, std=self.std)]) 
 
     def __len__(self):
         return len(self.rannos['filename'])

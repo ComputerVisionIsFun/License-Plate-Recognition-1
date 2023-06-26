@@ -86,7 +86,7 @@ def find_the_nearest_anchor(anchors:U.Anchors, obj:dict):
     for row in range(rows):
         for col in range(cols):
             anchor = anchors.at(row, col)
-            print(anchor.x, anchor.y, cx, cy)
+            # print(anchor.x, anchor.y, cx, cy)
             distances[row, col] = (anchor.x - cx)**2 + (anchor.y - cy)**2
             
     # print(distances, np.min(distances))
@@ -132,10 +132,6 @@ def argmax_iou(anchors:Anchors, cell_width:float, cell_height:float,
     # print(iou_array)
 
     return np.where(iou_array>=iou_th)
-
-
-
-
 
 def show_train_info(title:str, parameters:dict):
     '''
